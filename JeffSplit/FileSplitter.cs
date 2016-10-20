@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+using System.Threading;
+
+namespace JeffSplit
+{
+
+    public partial class FileSplitter : Form
+    {
+        private string inputFileName;
+        private string outputPath;
+        private int maxChunk = 512 * 1024;
+        private int secsElapsed = 0;
+        private TimeSpan timeElapsed;
+
+        public FileSplitter()
+        {
+            InitializeComponent();
+            txtMaxChunk.Text = (maxChunk / 1024).ToString() + "K";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.tmrSeconds.Enabled = true;
+            SplitFile(inputFileName, maxChunk, outputPath);
+            this.Close();
+        }
+
+        private void SplitFile(string inputFile, int chunkSize, string path)
+        {
+            this.button1.Enabled = false;
+            const int BUFFER_SIZE = 20 * 1024;
+            byte[] buffer = new byte[BUFFER_SIZE];
+
+            using (Stream input = File.OpenRead(inputFile))
+            {
+                int index = 0;
+                while (input.Position < input.Length)
+                {
+                    using (Stream output =
+                        File.Create(path + "\\" + Path.GetFileName(inputFile) + "." + 
+                        index.ToString().PadLeft(4, '0')))
+                    {
+                        int remaining = chunkSize, bytesRead;
+                        while (remaining > 0 && (bytesRead = input.Read(buffer, 0,
+                                Math.Min(remaining, BUFFER_SIZE))) > 0)
+                        {
+                            output.Write(buffer, 0, bytesRead);
+                            remaining -= bytesRead;
+                            this.pbarSplitPct.Value = Convert.ToInt32(input.Position * 99.9 / input.Length);
+                            this.pbarSplitPct.Refresh();
+                            Application.DoEvents();
+                        }
+                    }
+                    index++;
+                    Thread.Sleep(500); // experimental; perhaps try it
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.dialGetFile.ShowDialog();
+            inputFileName = this.dialGetFile.FileName;
+            this.dialGetFile.Dispose();
+            this.lblFileSelected.Text = Path.GetFileName(inputFileName);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.dialGetFolder.ShowDialog();
+            outputPath = this.dialGetFolder.SelectedPath;
+            this.dialGetFolder.Dispose();
+            this.lblSelectedPath.Text = outputPath;
+            this.button1.Enabled = true;
+        }
+
+        private void txtMaxChunk_Leave(object sender, EventArgs e)
+        {
+            int chkForKloc = this.txtMaxChunk.Text.Length;
+            string getCharK = this.txtMaxChunk.Text.Substring(chkForKloc - 1, 1);
+            int valueWithLetter = Convert.ToInt32(this.txtMaxChunk.Text.Substring(0, chkForKloc - 1));
+            switch (getCharK)
+            {
+                case "K":
+                    maxChunk = Convert.ToInt32(valueWithLetter) * 1024;
+                    break;
+                case "M":
+                    maxChunk = Convert.ToInt32(valueWithLetter) * 1024 * 1024;
+                    break;
+                case "G":
+                    maxChunk = Convert.ToInt32(valueWithLetter) * 1024 * 1024 * 1024;
+                    break;
+                default:
+                    maxChunk = Convert.ToInt32(txtMaxChunk.Text) * 1024;
+                    txtMaxChunk.Text += "K";
+                    this.txtMaxChunk.Refresh();
+                    break;
+            }
+        }
+
+        private void tmrSeconds_Tick(object sender, EventArgs e)
+        {
+            secsElapsed += 1;
+            timeElapsed = TimeSpan.FromSeconds(secsElapsed);
+            this.lblElapsed.Text = String.Format("{0:hh.mm.ss}", timeElapsed.ToString());
+            double pctDone = this.pbarSplitPct.Value / 99.9;
+            TimeSpan timeLeft = TimeSpan.FromSeconds(timeElapsed.TotalSeconds * (1 - pctDone) / pctDone);
+            this.lblRemaining.Text = String.Format("{0:hh.mm.ss}", timeLeft.ToString());
+        }
+    }
+}

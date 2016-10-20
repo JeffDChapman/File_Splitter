@@ -1,0 +1,9 @@
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\bin\Debug\JeffSplit.exe.config
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\bin\Debug\JeffSplit.exe
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\bin\Debug\JeffSplit.pdb
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.csprojResolveAssemblyReference.cache
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.FileSplitter.resources
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.Properties.Resources.resources
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.csproj.GenerateResource.Cache
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.exe
+c:\users\jchapman\documents\visual studio 2013\Projects\JeffSplit\JeffSplit\obj\Debug\JeffSplit.pdb
