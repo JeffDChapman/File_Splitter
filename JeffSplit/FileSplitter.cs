@@ -38,38 +38,45 @@ namespace JeffSplit
         {
             this.button1.Enabled = false;
             const int BUFFER_SIZE = 20 * 1024;
-            byte[] buffer = new byte[BUFFER_SIZE];
 
             using (Stream input = File.OpenRead(inputFile))
             {
-                int index = 0;
-                int smallRemain = BUFFER_SIZE;
+                int index = Convert.ToInt32(this.txtSkipFirst.Text);
+                input.Position += index * chunkSize;
+                
                 while (input.Position < input.Length)
                 {
                     using (Stream output =
                         File.Create(path + "\\" + Path.GetFileName(inputFile) + "." + 
                         index.ToString().PadLeft(4, '0')))
                     {
-                        long remaining = chunkSize;
-                        int bytesRead;
-                        while (remaining > 0 
-                            && (bytesRead = input.Read(buffer, 0, smallRemain)) > 0)
-                        {
-                            output.Write(buffer, 0, bytesRead);
-                            remaining -= bytesRead;
-                            if (remaining > BUFFER_SIZE)
-                                { smallRemain = BUFFER_SIZE;}
-                            else
-                                { smallRemain = Convert.ToInt32(remaining); }
-                            this.pbarSplitPct.Value = Convert.ToInt32(input.Position * 99.9 / input.Length);
-                            this.pbarSplitPct.Refresh();
-                            Application.DoEvents();
-                        }
+                        WriteAsplitFile(chunkSize, BUFFER_SIZE, input, output);
                     }
                     index++;
-                    smallRemain = BUFFER_SIZE;
-                    Thread.Sleep(500); // experimental; perhaps try it
+                    Thread.Sleep(500); 
                 }
+            }
+        }
+
+        private void WriteAsplitFile(long chunkSize, int BUFFER_SIZE, Stream input, Stream output)
+        {
+            int smallRemain = BUFFER_SIZE;
+            long remaining = chunkSize;
+            int bytesRead;
+            byte[] buffer = new byte[BUFFER_SIZE];
+
+            while (remaining > 0
+                && (bytesRead = input.Read(buffer, 0, smallRemain)) > 0)
+            {
+                output.Write(buffer, 0, bytesRead);
+                remaining -= bytesRead;
+                if (remaining > BUFFER_SIZE)
+                    { smallRemain = BUFFER_SIZE; }
+                else
+                    { smallRemain = Convert.ToInt32(remaining); }
+                this.pbarSplitPct.Value = Convert.ToInt32(input.Position * 99.9 / input.Length);
+                this.pbarSplitPct.Refresh();
+                Application.DoEvents();
             }
         }
 
