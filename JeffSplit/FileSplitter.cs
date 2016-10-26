@@ -18,6 +18,7 @@ namespace JeffSplit
         private string inputFileName;
         private string outputPath;
         private long maxChunk = 512 * 1024;
+        private long baseLineStart = 0;
         private int secsElapsed = 0;
         private TimeSpan timeElapsed;
 
@@ -43,6 +44,7 @@ namespace JeffSplit
             {
                 int index = Convert.ToInt32(this.txtSkipFirst.Text);
                 input.Position += index * chunkSize;
+                baseLineStart = input.Position / input.Length;
                 
                 while (input.Position < input.Length)
                 {
@@ -129,7 +131,7 @@ namespace JeffSplit
             try
             {
                 double pctDone = this.pbarSplitPct.Value / 99.9;
-                TimeSpan timeLeft = TimeSpan.FromSeconds(timeElapsed.TotalSeconds * (1 - pctDone) / pctDone);
+                TimeSpan timeLeft = TimeSpan.FromSeconds(timeElapsed.TotalSeconds * (1 - pctDone) / (pctDone - baseLineStart));
                 this.lblRemaining.Text = String.Format("{0:hh.mm.ss}", timeLeft.ToString());
             }
             catch { }
