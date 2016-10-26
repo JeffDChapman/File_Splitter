@@ -44,6 +44,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblRemaining = new System.Windows.Forms.Label();
             this.tmrSeconds = new System.Windows.Forms.Timer(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtSkipFirst = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -167,11 +169,30 @@
             this.tmrSeconds.Interval = 1000;
             this.tmrSeconds.Tick += new System.EventHandler(this.tmrSeconds_Tick);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(216, 51);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(53, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Skip First:";
+            // 
+            // txtSkipFirst
+            // 
+            this.txtSkipFirst.Location = new System.Drawing.Point(276, 48);
+            this.txtSkipFirst.Name = "txtSkipFirst";
+            this.txtSkipFirst.Size = new System.Drawing.Size(42, 20);
+            this.txtSkipFirst.TabIndex = 13;
+            this.txtSkipFirst.Text = "0";
+            // 
             // FileSplitter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(387, 197);
+            this.Controls.Add(this.txtSkipFirst);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblRemaining);
             this.Controls.Add(this.label2);
@@ -208,6 +229,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblRemaining;
         private System.Windows.Forms.Timer tmrSeconds;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtSkipFirst;
     }
 }
 
