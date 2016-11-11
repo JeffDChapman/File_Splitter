@@ -21,6 +21,8 @@ namespace JeffSplit
         private long baseLineStart = 0;
         private int secsElapsed = 0;
         private TimeSpan timeElapsed;
+        private double lastpctDone = 0;
+        private TimeSpan lasttimeLeft;
 
         public FileSplitter()
         {
@@ -131,8 +133,22 @@ namespace JeffSplit
             try
             {
                 double pctDone = this.pbarSplitPct.Value / 99.9;
-                TimeSpan timeLeft = TimeSpan.FromSeconds(timeElapsed.TotalSeconds * (1 - pctDone) / (pctDone - baseLineStart));
-                this.lblRemaining.Text = String.Format("{0:hh.mm.ss}", timeLeft.ToString());
+                if (lastpctDone == pctDone)
+                {
+                    lasttimeLeft -= TimeSpan.FromSeconds(1);
+                    if (lasttimeLeft < TimeSpan.FromSeconds(0))
+                        { lasttimeLeft = TimeSpan.FromSeconds(0); }
+                    this.lblRemaining.Text = String.Format("{0:hh.mm.ss}", lasttimeLeft.ToString());
+                }
+                else
+                {
+                    lastpctDone = pctDone;
+                    TimeSpan timeLeft = TimeSpan.FromSeconds(timeElapsed.TotalSeconds * (1 - pctDone) / (pctDone - baseLineStart));
+                    if (timeLeft < TimeSpan.FromSeconds(0))
+                        { timeLeft = TimeSpan.FromSeconds(0); }
+                    lasttimeLeft = timeLeft;
+                    this.lblRemaining.Text = String.Format("{0:hh.mm.ss}", timeLeft.ToString());
+                }
             }
             catch { }
 
